@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     buildCommand: yarn install
-    startCommand: yarn start
+    startCommand: node server.js
     headers:
       - path: /*
         name: X-Frame-Options
