@@ -39,44 +39,83 @@ app.post('/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
+    // Input validation
+    if (!email || !password || !name) {
+      return res.status(400).json({ error: 'Email, password, and name are required' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+    }
+
+    console.log('🔄 Registration attempt:', email);
+
     // Hash password (in produzione usa bcrypt)
     const hashedPassword = password; // Semplificato per demo
 
-    // Check if user exists
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
+    // Check if user exists - with error handling
+    let existingUser = null;
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = not found
+        console.error('Database query error:', error);
+        return res.status(500).json({ error: 'Database connection failed' });
+      }
+
+      existingUser = data;
+    } catch (dbError) {
+      console.error('Supabase connection error:', dbError);
+      return res.status(500).json({ error: 'Database not configured' });
+    }
 
     if (existingUser) {
+      console.log('⚠️ User already exists:', email);
       return res.status(400).json({ error: 'User already exists' });
     }
 
     // Create new user in Supabase
-    const { data: newUser, error } = await supabase
-      .from('users')
-      .insert([
-        {
-          email,
-          password: hashedPassword,
-          name,
-          created_at: new Date().toISOString()
-        }
-      ])
-      .select()
-      .single();
+    try {
+      const { data: newUser, error } = await supabase
+        .from('users')
+        .insert([
+          {
+            email,
+            password: hashedPassword,
+            name,
+            created_at: new Date().toISOString()
+          }
+        ])
+        .select()
+        .single();
 
-    if (error) throw error;
+      if (error) {
+        console.error('User creation error:', error);
+        return res.status(500).json({ error: 'Failed to create user account' });
+      }
 
-    console.log(`✅ New user registered: ${email}`);
-    res.json({
-      message: 'User registered successfully',
-      user: { id: newUser.id, email: newUser.email, name: newUser.name }
-    });
+      if (!newUser) {
+        console.error('No user data returned from database');
+        return res.status(500).json({ error: 'Failed to create user account' });
+      }
+
+      console.log(`✅ New user registered: ${email} (ID: ${newUser.id})`);
+      res.json({
+        message: 'User registered successfully',
+        user: { id: newUser.id, email: newUser.email, name: newUser.name }
+      });
+    } catch (createError) {
+      console.error('User creation exception:', createError);
+      res.status(500).json({ error: 'Failed to create user account' });
+    }
+
   } catch (error) {
     console.error('❌ Registration error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 });
 
