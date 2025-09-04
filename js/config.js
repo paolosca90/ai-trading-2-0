@@ -5,8 +5,8 @@ window.CONFIG = {
     // Production Environment
     ENV: 'production',
     
-    // Backend API - Self-hosted Node.js server
-    API_BASE_URL: window.location.origin,
+    // Direct Supabase usage for existing setup
+    API_BASE_URL: '', // Not needed since we're using Supabase directly
     
     // Supabase Database Configuration (Production)
     SUPABASE: {
