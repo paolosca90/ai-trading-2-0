@@ -69,7 +69,7 @@ echo ✅ MT5 installato correttamente!
 
 REM Installa Python se mancante
 echo Verifica Python...
-py --version >nul 2>&1
+python --version >nul 2>&1
 if errorlevel 1 (
     goto INSTALL_PYTHON
 ) else (
@@ -94,13 +94,14 @@ if errorlevel 1 (
 )
 
 echo ✅ Python installato correttamente!
+goto INSTALL_PACKAGES
 
 :INSTALL_PACKAGES
 echo Installazione pacchetti Python necessari...
 echo.
 
 REM Installa MetaTrader5 tramite pip
-py -m pip install MetaTrader5 Flask flask-cors requests --quiet
+python -m pip install MetaTrader5 Flask flask-cors requests --quiet
 if errorlevel 1 (
     echo ⚠️ Installazione pacchetti fallita, prosegui comunque...
 )
