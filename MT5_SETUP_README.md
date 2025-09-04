@@ -184,6 +184,120 @@ Il server include:
 - `POST /api/close_position` - Chiude posizione
 - `GET /api/account` - Informazioni account
 
+## 🏆 AUTO-INSTALLER PER CLIENTI
+
+Per facilitare l'installazione, il cliente troverà nella sua area download il file `MT5_Auto_Installer.exe` che:
+
+### Cos'è il MT5 Auto-Installer
+1. **Installa automaticamente** MetaTrader 5
+2. **Scarica e installa** Python 3.7+
+3. **Installa tutte le dipendenze** (MetaTrader5, Flask, ecc.)
+4. **Copia e configura** il file mt5_bridge.py
+5. **Imposta l'auto-avvio** del server MT5
+6. **Verifica la connessione** finale
+
+### Come usare il .exe
+1. **Scarica** `MT5_Auto_Installer.exe`
+2. **Esegui come Amministratore** (Clic destro su "Esegui come amministratore")
+3. **Segui le istruzioni** a video
+4. **Inserisci credenziali MT5** quando richiesto
+5. **Resta collegato!** (Il processo richiede 10-15 minuti)
+
+### Cosa fa l'installer
+```powershell
+# Installa MT5
+- Download MT5 dalla pagina ufficiale
+- Installazione silenziosa con path configurato
+- Abilita trading automatico e DLL
+
+# Installa Python
+- Download Python dalla fonte ufficiale
+- Addizione ai PATH di Windows
+- Installazione pip (package manager)
+
+# Installa python packages
+- MetaTrader5>=5.0.0
+- Flask>=2.0.0
+- Flask-CORS>=3.0.0
+- Requests>=2.25.0
+
+# Configura Bridge
+- Copia mt5_bridge.py nella cartella di lavoro
+- Crea configurazione automatica
+- Imposta servizio Windows per auto-avvio
+
+# Test Finale
+- Avvia servizio MT5
+- Verifica connessione magnete
+- Conferma API endpoints funzionanti
+```
+
+## 📂 PER GLI SVILUPPATORI
+
+Se stai preparando i file per il cliente, ecco come creare l'installer .exe:
+
+### Opzione 1: Usa il Batch (Semplice)
+1. Cliente scarica: `AutoInstall.bat` + `MT5_Auto_Installer.ps1`
+2. Esegue `.bat` come amministratore
+3. Segue le istruzioni a video
+
+### Opzione 2: Converti in .EXE (Professionale)
+Per creare un singolo .exe che il cliente può scaricare e eseguire:
+
+#### Pre-requisiti:
+- Scarica [PSScriptToExe](https://github.com/klothe/PSScriptToExe)
+- Estrai `PSScriptToExe.exe` in `C:\`
+
+#### Crea il .EXE:
+```powershell
+# Esegui nella directory del progetto:
+.\Convert_To_EXE.ps1
+```
+
+Questo creerà: `MT5_Auto_Installer.exe`
+
+#### Pubblicazione per il cliente:
+- Carica `MT5_Auto_Installer.exe` nella sua area download
+- Il cliente lo scarica, esegue come amministratore
+- Tutto avviene automaticamente
+
+## 🔍 VERIFICA POST-INSTALLAZIONE
+
+Dopo l'installazione, verifica che tutto funzioni:
+
+```powershell
+# Verifica che il servizio sia attivo
+Get-ScheduledTask -TaskName "AI Trading MT5 Bridge"
+
+# Testa la connessione MT5
+curl http://localhost:8080/health
+
+# Verifica che MT5 sia connesso
+curl http://localhost:8080/api/account
+```
+
+## 🆘 TROUBLESHOOTING PER CLIENTI
+
+### "Installation failed"
+- Riavvia il computer e riprova
+- Verifica connessione internet
+- Disabilita temporaneamente antivirus
+
+### "MT5 connection failed"
+- Apri MT5 manualmente
+- Vai su Tools → Options → Server
+- Ridigita i server details se necessario
+- Riavvia l'installer
+
+### "Python not found"
+- Installazione di Python fallita
+- Riavvia il computer
+- Aggiungi `C:\Python39\` manualmente al PATH
+
+### "Bridge not starting"
+- Verifica Windows Firewall permetta porta 8080
+- Clic destro su start_mt5_bridge.bat → "Run as administrator"
+
 ### Esempio Ordine di Trading
 ```json
 POST /api/order
