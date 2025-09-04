@@ -252,6 +252,155 @@ window.API = {
     }
 };
 
+// Simple Supabase Client for Frontend
+// Initialize Supabase client for direct database access
+if (window.supabase) {
+    window.SUPABASE = window.supabase.createClient(CONFIG.SUPABASE.URL, CONFIG.SUPABASE.ANON_KEY);
+} else {
+    console.warn('⚠️ Supabase client not found. Make sure to include the Supabase JS client script.');
+    window.SUPABASE = null;
+}
+
+// Updated API Helper Functions for Supabase Direct Access
+window.API = {
+    // Authentication with Supabase
+    async register(email, password, name) {
+        if (!window.SUPABASE) {
+            throw new Error('Supabase client not initialized');
+        }
+
+        try {
+            // Create user account
+            const { data: authData, error: authError } = await window.SUPABASE.auth.signUp({
+                email,
+                password,
+            });
+
+            if (authError) throw authError;
+
+            // Create profile in profiles table
+            if (authData.user) {
+                const { error: profileError } = await window.SUPABASE
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: authData.user.id,
+                            email,
+                            name,
+                            subscription: 'basic'
+                        }
+                    ]);
+
+                if (profileError) {
+                    console.warn('Profile creation failed:', profileError);
+                }
+            }
+
+            console.log('✅ User registered successfully:', email);
+            return {
+                message: 'User registered successfully',
+                token: authData.session?.access_token,
+                user: { id: authData.user?.id, email, name }
+            };
+        } catch (error) {
+            console.error('❌ Registration error:', error);
+
+            // Return a user-friendly error message
+            if (error.message.includes('already registered')) {
+                return { error: 'Email already registered' };
+            }
+            return { error: error.message || 'Registration failed' };
+        }
+    },
+
+    async login(email, password) {
+        if (!window.SUPABASE) {
+            throw new Error('Supabase client not initialized');
+        }
+
+        try {
+            const { data, error } = await window.SUPABASE.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) throw error;
+
+            console.log('✅ User logged in successfully:', email);
+            return {
+                message: 'Login successful',
+                token: data.session?.access_token,
+                user: { id: data.user?.id, email, name: data.user?.user_metadata?.name }
+            };
+        } catch (error) {
+            console.error('❌ Login error:', error);
+            return { error: 'Invalid email or password' };
+        }
+    },
+
+    async getCurrentUser() {
+        if (!window.SUPABASE) return null;
+
+        try {
+            const { data: { user } } = await window.SUPABASE.auth.getUser();
+            return user;
+        } catch (error) {
+            console.error('❌ Get user error:', error);
+            return null;
+        }
+    },
+
+    // Profile management
+    async getUserProfile() {
+        try {
+            const user = await this.getCurrentUser();
+            if (!user) return null;
+
+            const { data, error } = await window.SUPABASE
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('❌ Profile fetch error:', error);
+            return null;
+        }
+    },
+
+    // Mock data for demonstration (until real data is saved)
+    async generateSignal(symbol, strategy) {
+        return {
+            id: `signal_${Date.now()}`,
+            symbol,
+            strategy,
+            direction: Math.random() > 0.5 ? 'LONG' : 'SHORT',
+            probability: Math.round((0.6 + Math.random() * 0.35) * 100) / 100,
+            riskFactor: Math.round((1.0 + Math.random() * 2.5) * 100) / 100,
+            confidence: Math.floor(Math.random() * 5) + 1,
+            created_at: new Date().toISOString(),
+            status: 'active'
+        };
+    },
+
+    async getTopSignals() {
+        // This could query a real signals table later
+        return [];
+    },
+
+    async getMT5Status() {
+        return {
+            connected: false,
+            server: CONFIG.MT5.SERVER,
+            account: CONFIG.MT5.LOGIN,
+            balance: 0.00,
+            version: 'Not Connected'
+        };
+    }
+};
+
 // Utility Functions
 window.UTILS = {
     // Format currency
@@ -261,54 +410,46 @@ window.UTILS = {
             currency: currency
         }).format(amount);
     },
-    
+
     // Format percentage
     formatPercentage(value) {
         return `${(value * 100).toFixed(2)}%`;
     },
-    
+
     // Get color for profit/loss
     getProfitColor(value) {
         return value >= 0 ? 'text-green-600' : 'text-red-600';
     },
-    
+
     // Format timestamp
     formatTimestamp(timestamp) {
         return new Date(timestamp).toLocaleString();
     },
-    
+
     // Show notification
     showNotification(title, message, type = 'info') {
         // Create notification element
         const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
+        notification.className = `notification notification-${type} fixed top-4 right-4 z-50`;
         notification.innerHTML = `
-            <div class="notification-content">
-                <h4>${title}</h4>
-                <p>${message}</p>
+            <div class="notification-content bg-white shadow-lg rounded-lg p-4 border-l-4 ${type === 'success' ? 'border-green-500' : type === 'error' ? 'border-red-500' : 'border-blue-500'}">
+                <h4 class="font-bold text-gray-800">${title}</h4>
+                <p class="text-gray-600 mt-1">${message}</p>
             </div>
-            <button class="notification-close">&times;</button>
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Auto remove after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
             }
         }, 5000);
-        
-        // Close button functionality
-        notification.querySelector('.notification-close').onclick = () => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        };
     }
 };
 
 console.log('🚀 AI Trading 2.0 Configuration loaded successfully!');
-console.log('Backend API:', CONFIG.API_BASE_URL);
+console.log('Supabase URL:', CONFIG.SUPABASE.URL);
 console.log('MT5 Server:', `${CONFIG.MT5.HOST}:${CONFIG.MT5.PORT}`);
 console.log('Environment:', CONFIG.ENV);
