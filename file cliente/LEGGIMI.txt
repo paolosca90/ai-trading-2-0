@@ -1,0 +1,27 @@
+🚀 AI TRADING 2.0 - INSTALLAZIONE RAPIDA
+
+==== ISTRUZIONI SEMPLICI ====
+
+1. Clicca due volte sul file: "MT5_Installer.bat"
+2. Se Windows chiede conferma: clicca "ESEGUI COME AMMINISTRATORE"
+3. Attendi - si installa tutto automaticamente
+4. Quando finito, RIAVVIA il computer
+
+=================
+
+Dopo il riavvio:
+- Apri MetaTrader 5 (se richiesto)
+- Apri la dashboard di trading nel browser
+- Start trading! 🎯
+
+=================
+
+❗ IMPORTANTE:
+- Antivirus potrebbe bloccare l'installazione
+- Se succede, disabilita temporaneamente l'antivirus
+- Riagganciarlo dopo l'installazione
+
+📞 Probleemmi?
+- Riavvia computer
+- Riesegui installer come amministratore
+- Verifica connessione internet

@@ -1,0 +1,28 @@
+📦 MESSAGGIO DA INVIARE AI CLIENTI
+
+"Ciao! 🎉
+
+Ecco i file per installare AI Trading 2.0:
+
+📥 Scarica il file ZIP che ti ho mandato
+📂 Dentro trovi:
+   ⭐ MT5_Installer.bat (installer principale)
+   📖 LEGGIMI.txt (istruzioni semplici)
+
+🚀 Come installare:
+
+1. Clicca due volte su "MT5_Installer.bat"
+2. Se Windows chiede: "Esegui come amministratore" → CLICCA SÌ
+3. Aspetta 10-15 minuti! (installazione automatica rilevante)
+4. Quando finito, RIAVVIA il computer
+
+✨ Dopo il riavvio sei pronto per tradare!
+
+💡 Se hai problemi:
+• Antivirus? Disabilitalo temporaneamente
+• Non parte? Esegui come amministratore
+• Riavvia e riprova
+
+🔥 Divertiti con AI Trading 2.0!
+
+Se qualcosa non va, scrivimi! 😊"
