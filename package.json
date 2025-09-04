@@ -7,7 +7,7 @@
     "dev": "python -m http.server 3000",
     "build": "npm run build:render",
     "build:render": "echo 'Building AI Trading 2.0 for Render deployment...' && echo 'Static build complete - all files ready for deployment'",
-    "start": "echo 'Starting production server on Render'",
+    "start": "npx http-server . -p $PORT -c-1",
     "deploy": "vercel --prod",
     "deploy:render": "echo 'Deploy to Render.com using render.yaml configuration'"
   },
@@ -23,7 +23,6 @@
   ],
   "author": "AI Trading 2.0 Team",
   "license": "MIT",
-  "dependencies": {},
   "dependencies": {
     "http-server": "^14.1.1"
   },
