@@ -1,15 +1,6 @@
-version: 2
-
 services:
   - type: web
     name: ai-trading-2-0
-    runtime: node
-    region: frankfurt
-    build:
-      command: npm install
-      root: .
-    startCommand: node server.js
-    port: 3000
-    envVars:
-      NODE_ENV: production
-      PORT: 3000
+    env: static
+    staticPublishPath: ./
+    buildCommand: echo "Building AI Trading 2.0 static site..."
