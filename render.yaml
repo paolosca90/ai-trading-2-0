@@ -2,8 +2,3 @@ services:
   - type: static
     name: ai-trading-2-0
     staticPublishPath: ./
-    buildCommand: echo "Building AI Trading 2.0 static site..."
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
