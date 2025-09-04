@@ -8,6 +8,7 @@
     "build": "npm run build:render",
     "build:render": "echo 'Building AI Trading 2.0 for Render deployment...' && echo 'Static build complete - all files ready for deployment'",
     "start": "node server.js",
+    "serve": "node server.js",
     "deploy": "vercel --prod",
     "deploy:render": "echo 'Deploy to Render.com using render.yaml configuration'"
   },

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/C:\\Users\\USER\\Desktop\\AI-money-generator-main\\ai-trading-2.0/**)",
+      "Bash(git commit:*)",
+      "Read(/C:\\Users\\USER\\Desktop\\AI-money-generator-main\\ai-trading-2.0/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
