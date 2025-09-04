@@ -1,11 +1,21 @@
 🚀 AI TRADING 2.0 - INSTALLAZIONE RAPIDA
 
+==== DATI NECESSARI PREPARARE ====
+Prima di iniziare, prepara dal tuo broker MT5:
+• 📱 Numero account (MT5 Login)
+• 🔑 Password di trading
+• 🖥️  Server (es: RoboForex-ECN, IC-Markets-Demo)
+
 ==== ISTRUZIONI SEMPLICI ====
 
 1. Clicca due volte sul file: "MT5_Installer.bat"
 2. Se Windows chiede conferma: clicca "ESEGUI COME AMMINISTRATORE"
-3. Attendi - si installa tutto automaticamente
-4. Quando finito, RIAVVIA il computer
+3. Attendi - inserisci i tuoi dati MT5 quando richiesto
+4. Si installa tutto automaticamente (10-15 minuti)
+5. Quando finito, RIAVVIA il computer
+
+ℹ️  Se MT5 è già installato, l'installer lo riconosce
+    automaticamente e salta il download per velocizzare!
 
 =================
 

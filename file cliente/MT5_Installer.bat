@@ -65,6 +65,47 @@ if errorlevel 1 (
 
 echo ✅ MT5 installato correttamente!
 
+REM Verifica se MT5 è già installato
+echo Verifica se MT5 è già installato...
+if exist "C:\Program Files\MetaTrader 5\terminal64.exe" (
+    echo ✅ MT5 già installato in Program Files
+    goto MT5_SKIP
+)
+if exist "C:\Program Files (x86)\MetaTrader 5\terminal64.exe" (
+    echo ✅ MT5 già installato in Program Files (x86)
+    goto MT5_SKIP
+)
+if exist "%LOCALAPPDATA%\Programs\MetaTrader 5\terminal64.exe" (
+    echo ✅ MT5 già installato in AppData
+    goto MT5_SKIP
+)
+
+REM Scarica MT5 solo se non è installato
+echo MT5 non trovato. Iniziamo il download...
+goto DOWNLOAD_MT5
+
+:DOWNLOAD_MT5
+REM Crea directory temp se non esiste
+if not exist "C:\Temp" mkdir C:\Temp
+
+REM Scarica MT5 installer
+echo Scaricando MT5 installer...
+powershell -Command "Invoke-WebRequest -Uri 'https://download.mql5.com/cdn/web/metaquotes.ltd/mt5/mt5setup.exe?utm_source=www.metatrader4.com&utm_campaign=download' -OutFile 'C:\Temp\mt5_installer.exe'" 2>nul
+if errorlevel 1 (
+    echo ⚠️ Download MT5 fallito, verifica connessione internet
+    goto MT5_SKIP
+)
+
+REM Installa MT5 silenziosamente
+echo Installando MT5...
+START /WAIT C:\Temp\mt5_installer.exe /quiet /norestart
+if errorlevel 1 (
+    echo ⚠️ Installazione MT5 fallita
+    goto MT5_SKIP
+)
+
+echo ✅ MT5 installato correttamente!
+
 :MT5_SKIP
 
 REM Installa Python se mancante
@@ -79,8 +120,11 @@ if errorlevel 1 (
 
 :INSTALL_PYTHON
 echo Installazione Python 3.9...
-echo.
 
+REM Crea directory temp se non esiste per Python installer
+if not exist "C:\Temp" mkdir C:\Temp
+
+echo Scaricando Python installer...
 powershell -Command "Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe' -OutFile 'C:\Temp\python_installer.exe'" 2>nul
 if errorlevel 1 (
     echo ❌ Download Python fallito
@@ -110,12 +154,37 @@ REM Configura credenziali inizia giorno
 echo.
 echo 🔑 Credenziali MT5 (verranno salvate in mt5_credentials.json)
 echo.
+echo Il cliente deve fornire login, password e server del suo broker.
+echo.
 
-set /p MT5_LOGIN="MT5 Login (es. 67163307): "
+set /p MT5_LOGIN="MT5 Login (numero account): "
+if "%MT5_LOGIN%"=="" (
+    echo ❌ Login obbligatorio!
+    pause
+    exit /b 1
+)
+
 set /p MT5_PASSWORD="MT5 Password: "
+if "%MT5_PASSWORD%"=="" (
+    echo ❌ Password obbligatoria!
+    pause
+    exit /b 1
+)
+
+set /p MT5_SERVER="MT5 Server (es. RoboForex-ECN, IC-Markets-Demo): "
+if "%MT5_SERVER%"=="" (
+    echo ⚠️ Server non specificato, uso Predefinito RoboForex-ECN
+    set MT5_SERVER=RoboForex-ECN
+)
+
+echo.
+echo Configurazione assicurata:
+echo Login: %MT5_LOGIN%
+echo Server: %MT5_SERVER%
+echo.
 
 echo Creazione file credenziali...
-echo {"login":"%MT5_LOGIN%","password":"%MT5_PASSWORD%","server":"RoboForex-ECN"} > mt5_credentials.json
+echo {"login":"%MT5_LOGIN%","password":"%MT5_PASSWORD%","server":"%MT5_SERVER%"} > mt5_credentials.json
 
 echo ✅ Credenziali salvate!
 

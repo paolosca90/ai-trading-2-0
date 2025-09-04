@@ -4,10 +4,15 @@
 
 Ecco i file per installare AI Trading 2.0:
 
-📥 Scarica il file ZIP che ti ho mandato
+📥 Scarica il file ZIP che ti ho mando
 📂 Dentro trovi:
    ⭐ MT5_Installer.bat (installer principale)
    📖 LEGGIMI.txt (istruzioni semplici)
+
+📋 Prepara questi dati dal tuo broker MT5:
+   • 📱 Numero account (login)
+   • 🔑 Password di trading
+   • 🖥️  Server broker (es: RoboForex-ECN, IC-Markets-Demo, ecc.)
 
 🚀 Come installare:
 
