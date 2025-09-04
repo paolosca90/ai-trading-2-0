@@ -59,7 +59,7 @@ window.CONFIG = {
     // Features Enabled
     FEATURES: {
         ENABLE_REAL_TRADING: true,
-        ENABLE_DEMO_MODE: true,
+        ENABLE_DEMO_MODE: false,
         ENABLE_ML_ANALYTICS: true,
         ENABLE_PATTERN_DETECTION: true,
         ENABLE_PERFORMANCE_MONITORING: true
