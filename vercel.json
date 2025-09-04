@@ -1,0 +1,57 @@
+{
+  "buildCommand": "echo 'No build needed for static HTML'",
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/dashboard",
+      "destination": "/pages/dashboard.html"
+    },
+    {
+      "source": "/trade",
+      "destination": "/pages/trade.html"
+    },
+    {
+      "source": "/ml",
+      "destination": "/pages/mldashboard.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/pages/login.html"
+    },
+    {
+      "source": "/subscribe",
+      "destination": "/pages/subscribe.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/pages/register.html"
+    },
+    {
+      "source": "/settings",
+      "destination": "/pages/settings.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; connect-src 'self' https://*.vercel.app https://*.supabase.co http://154.61.187.189:8080 https://api.stripe.com https://fonts.googleapis.com https://cdn.jsdelivr.net;"
+        }
+      ]
+    }
+  ]
+}

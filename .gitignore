@@ -1,0 +1,26 @@
+# Deployment platforms
+.vercel
+.render
+
+# Build artifacts
+build-info.json
+deployment-manifest.json
+
+# Development
+node_modules/
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Analytics - AI Trading 2.0</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../index.html" class="nav-brand">🚀 AI Trading 2.0</a>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="trade.html" class="nav-link">Trade</a></li>
+                <li><a href="mldashboard.html" class="nav-link active">ML Analytics</a></li>
+                <li><a href="history.html" class="nav-link">Storia</a></li>
+                <li><a href="settings.html" class="nav-link">Impostazioni</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold">🤖 Machine Learning Analytics</h1>
+                    <p class="text-gray">Performance avanzate e metriche del modello di intelligenza artificiale</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="train-model-btn" class="btn btn-gradient">🎯 Addestra Modello</button>
+                    <button id="export-data-btn" class="btn btn-outline">📊 Esporta Dati</button>
+                </div>
+            </div>
+
+            <!-- Model Performance Overview -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">📈 Performance del Modello</h2>
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="model-accuracy">0%</div>
+                        <div class="stat-label">Accuratezza</div>
+                        <div class="stat-description">Precisione delle predizioni</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="model-precision">0%</div>
+                        <div class="stat-label">Precision</div>
+                        <div class="stat-description">Veri positivi / (VP + FP)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="model-recall">0%</div>
+                        <div class="stat-label">Recall</div>
+                        <div class="stat-description">Veri positivi / (VP + FN)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="model-f1">0%</div>
+                        <div class="stat-label">F1 Score</div>
+                        <div class="stat-description">Media armonica di precisione e recall</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Statistics -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">🎓 Statistiche Training</h2>
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-samples">0</div>
+                        <div class="stat-label">Campioni Totali</div>
+                        <div class="stat-description">Dati utilizzati per training</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="training-epochs">0</div>
+                        <div class="stat-label">Epoche</div>
+                        <div class="stat-description">Cicli di training completati</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="last-training">-</div>
+                        <div class="stat-label">Ultimo Training</div>
+                        <div class="stat-description">Data dell'ultimo aggiornamento</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-2 gap-6 mb-8">
+                <!-- Performance Timeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📊 Andamento Performance</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="relative" style="height: 300px;">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Importance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🎯 Importanza Features</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="relative" style="height: 300px;">
+                            <canvas id="featuresChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Performance vs ML Predictions -->
+            <div class="grid grid-cols-2 gap-6 mb-8">
+                <!-- Profit/Loss Timeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💰 P&L vs Predizioni</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="relative" style="height: 300px;">
+                            <canvas id="profitChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accuracy Trends -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🎯 Trend Accuratezza</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="relative" style="height: 300px;">
+                            <canvas id="accuracyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Predictions Analysis -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">🔮 Analisi Predizioni</h2>
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-predictions">0</div>
+                        <div class="stat-label">Predizioni Totali</div>
+                        <div class="stat-description">Generate dal modello</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="correct-predictions">0</div>
+                        <div class="stat-label">Predizioni Corrette</div>
+                        <div class="stat-description">Esito conforme alla predizione</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-confidence">0%</div>
+                        <div class="stat-label">Confidenza Media</div>
+                        <div class="stat-description">Livello medio di sicurezza</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="high-conf-accuracy">0%</div>
+                        <div class="stat-label">Accuracy >80%</div>
+                        <div class="stat-description">Precisione predizioni ad alta confidenza</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Analysis -->
+            <div class="card mb-8">
+                <div class="card-header">
+                    <h3 class="card-title">🧠 Analisi Features</h3>
+                </div>
+                <div class="card-content">
+                    <div id="features-loading" class="loading">
+                        <div class="spinner"></div>
+                        <span class="loading-text">Caricamento analisi features...</span>
+                    </div>
+                    
+                    <div id="features-content" class="hidden">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-3">🔝 Top 10 Features più Importanti</h4>
+                                <div id="top-features" class="space-y-2">
+                                    <!-- Features will be populated here -->
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-3">📊 Distribuzione per Categoria</h4>
+                                <div id="feature-categories" class="space-y-3">
+                                    <!-- Categories will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model Configuration -->
+            <div class="card mb-8">
+                <div class="card-header">
+                    <h3 class="card-title">⚙️ Configurazione Modello</h3>
+                </div>
+                <div class="card-content">
+                    <div class="grid grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">🏗️ Architettura</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Tipo Modello:</span>
+                                    <span class="font-semibold">Random Forest</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>N° Alberi:</span>
+                                    <span class="font-semibold" id="n-estimators">100</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Max Depth:</span>
+                                    <span class="font-semibold" id="max-depth">10</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Min Samples Split:</span>
+                                    <span class="font-semibold" id="min-samples">2</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-3">📈 Performance Metrics</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Cross-Val Score:</span>
+                                    <span class="font-semibold text-green" id="cv-score">0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>ROC AUC:</span>
+                                    <span class="font-semibold text-blue" id="roc-auc">0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Log Loss:</span>
+                                    <span class="font-semibold text-warning" id="log-loss">0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Training Time:</span>
+                                    <span class="font-semibold" id="training-time">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-3">🔄 Auto-Retraining</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">Auto-retrain:</span>
+                                    <div class="badge badge-success">Attivo</div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">Frequenza:</span>
+                                    <span class="text-sm font-semibold">Ogni 24h</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">Min Samples:</span>
+                                    <span class="text-sm font-semibold">1000</span>
+                                </div>
+                                <button id="manual-retrain-btn" class="btn btn-primary btn-small w-full">
+                                    🚀 Retrain Manuale
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pattern Detection Results -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="flex justify-between items-center">
+                        <h3 class="card-title">🔍 Pattern Detection</h3>
+                        <button id="detect-patterns-btn" class="btn btn-outline btn-small">
+                            🔍 Rileva Pattern
+                        </button>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div id="patterns-loading" class="hidden loading">
+                        <div class="spinner"></div>
+                        <span class="loading-text">Rilevamento pattern in corso...</span>
+                    </div>
+                    
+                    <div id="patterns-content">
+                        <div class="grid grid-cols-4 gap-4 mb-6">
+                            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                                <div class="text-2xl font-bold text-blue" id="head-shoulders">0</div>
+                                <div class="text-sm text-blue">Head & Shoulders</div>
+                            </div>
+                            <div class="text-center p-4 bg-green-50 rounded-lg">
+                                <div class="text-2xl font-bold text-green" id="double-top">0</div>
+                                <div class="text-sm text-green">Double Top/Bottom</div>
+                            </div>
+                            <div class="text-center p-4 bg-purple-50 rounded-lg">
+                                <div class="text-2xl font-bold" style="color: var(--color-secondary);" id="triangles">0</div>
+                                <div class="text-sm" style="color: var(--color-secondary);">Triangoli</div>
+                            </div>
+                            <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                                <div class="text-2xl font-bold text-warning" id="flags">0</div>
+                                <div class="text-sm text-warning">Flags & Pennants</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center text-gray">
+                            <p>Clicca "Rileva Pattern" per analizzare i pattern più recenti sui principali asset</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        let mlData = null;
+        let charts = {};
+
+        // Initialize ML Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMLDashboard();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('train-model-btn').addEventListener('click', trainModel);
+            document.getElementById('export-data-btn').addEventListener('click', exportData);
+            document.getElementById('manual-retrain-btn').addEventListener('click', manualRetrain);
+            document.getElementById('detect-patterns-btn').addEventListener('click', detectPatterns);
+        }
+
+        async function initializeMLDashboard() {
+            await loadMLAnalytics();
+            initializeCharts();
+        }
+
+        async function loadMLAnalytics() {
+            try {
+                mlData = await API.getMLAnalytics();
+                updateMLStats();
+                updateFeatureAnalysis();
+                updateCharts();
+            } catch (error) {
+                console.error('ML Analytics Error:', error);
+                UTILS.showNotification(
+                    '❌ Errore Caricamento',
+                    'Errore nel caricamento dei dati ML: ' + error.message,
+                    'error'
+                );
+            }
+        }
+
+        function updateMLStats() {
+            if (!mlData) return;
+
+            const perf = mlData.modelPerformance || {};
+            const pred = mlData.predictionStats || {};
+            const training = mlData.trainingStats || {};
+
+            // Model Performance
+            document.getElementById('model-accuracy').textContent = 
+                `${((perf.accuracy || 0) * 100).toFixed(1)}%`;
+            document.getElementById('model-precision').textContent = 
+                `${((perf.precision || 0) * 100).toFixed(1)}%`;
+            document.getElementById('model-recall').textContent = 
+                `${((perf.recall || 0) * 100).toFixed(1)}%`;
+            document.getElementById('model-f1').textContent = 
+                `${((perf.f1Score || 0) * 100).toFixed(1)}%`;
+
+            // Training Stats
+            document.getElementById('total-samples').textContent = training.totalSamples || 0;
+            document.getElementById('training-epochs').textContent = training.epochs || 0;
+            document.getElementById('last-training').textContent = 
+                training.lastTraining ? new Date(training.lastTraining).toLocaleDateString() : '-';
+
+            // Predictions
+            document.getElementById('total-predictions').textContent = pred.totalPredictions || 0;
+            document.getElementById('correct-predictions').textContent = pred.correctPredictions || 0;
+            document.getElementById('avg-confidence').textContent = 
+                `${((pred.avgConfidence || 0) * 100).toFixed(1)}%`;
+            document.getElementById('high-conf-accuracy').textContent = 
+                `${((pred.highConfidenceAccuracy || 0) * 100).toFixed(1)}%`;
+
+            // Model Config
+            const config = mlData.modelConfig || {};
+            document.getElementById('n-estimators').textContent = config.nEstimators || 100;
+            document.getElementById('max-depth').textContent = config.maxDepth || 10;
+            document.getElementById('min-samples').textContent = config.minSamplesSplit || 2;
+            
+            document.getElementById('cv-score').textContent = (config.cvScore || 0).toFixed(3);
+            document.getElementById('roc-auc').textContent = (config.rocAuc || 0).toFixed(3);
+            document.getElementById('log-loss').textContent = (config.logLoss || 0).toFixed(3);
+            document.getElementById('training-time').textContent = config.trainingTime || '-';
+
+            // Color accuracy based on value
+            const accuracyEl = document.getElementById('model-accuracy');
+            const accuracy = (perf.accuracy || 0) * 100;
+            accuracyEl.className = `stat-value ${accuracy >= 80 ? 'text-green' : accuracy >= 70 ? 'text-warning' : 'text-red'}`;
+        }
+
+        function updateFeatureAnalysis() {
+            if (!mlData || !mlData.featureImportance) {
+                document.getElementById('features-loading').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('features-loading').classList.add('hidden');
+            document.getElementById('features-content').classList.remove('hidden');
+
+            // Top Features
+            const topFeatures = mlData.featureImportance.slice(0, 10);
+            const topFeaturesEl = document.getElementById('top-features');
+            topFeaturesEl.innerHTML = topFeatures.map((feature, index) => `
+                <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">
+                            ${index + 1}
+                        </div>
+                        <span class="font-medium">${feature.feature}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-20 bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: ${(feature.importance * 100).toFixed(1)}%"></div>
+                        </div>
+                        <span class="text-sm font-semibold">${(feature.importance * 100).toFixed(1)}%</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Feature Categories
+            const categories = groupFeaturesByCategory(mlData.featureImportance);
+            const categoriesEl = document.getElementById('feature-categories');
+            categoriesEl.innerHTML = Object.entries(categories).map(([category, importance]) => `
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">${category}</span>
+                    <div class="flex items-center gap-2">
+                        <div class="w-24 bg-gray-200 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full" 
+                                 style="width: ${(importance * 100).toFixed(1)}%"></div>
+                        </div>
+                        <span class="text-sm font-semibold">${(importance * 100).toFixed(1)}%</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function groupFeaturesByCategory(features) {
+            const categories = {
+                'Tecnici': 0,
+                'Volume': 0,
+                'Momentum': 0,
+                'Volatilità': 0,
+                'Altri': 0
+            };
+
+            features.forEach(feature => {
+                const name = feature.feature.toLowerCase();
+                if (name.includes('rsi') || name.includes('macd') || name.includes('sma') || name.includes('ema')) {
+                    categories['Tecnici'] += feature.importance;
+                } else if (name.includes('volume') || name.includes('obv')) {
+                    categories['Volume'] += feature.importance;
+                } else if (name.includes('momentum') || name.includes('roc') || name.includes('stoch')) {
+                    categories['Momentum'] += feature.importance;
+                } else if (name.includes('atr') || name.includes('bb') || name.includes('volatil')) {
+                    categories['Volatilità'] += feature.importance;
+                } else {
+                    categories['Altri'] += feature.importance;
+                }
+            });
+
+            return categories;
+        }
+
+        function initializeCharts() {
+            // Performance Chart
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            charts.performance = new Chart(perfCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Accuratezza %',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Features Chart
+            const featCtx = document.getElementById('featuresChart').getContext('2d');
+            charts.features = new Chart(featCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Importanza %',
+                        data: [],
+                        backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                        borderColor: '#8b5cf6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Profit Chart
+            const profitCtx = document.getElementById('profitChart').getContext('2d');
+            charts.profit = new Chart(profitCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'P&L Cumulativo',
+                        data: [],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Accuracy Chart
+            const accCtx = document.getElementById('accuracyChart').getContext('2d');
+            charts.accuracy = new Chart(accCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Accuracy Rolling 7d',
+                        data: [],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            if (!mlData) return;
+
+            // Performance Timeline
+            if (mlData.performanceTimeline && charts.performance) {
+                const timeline = mlData.performanceTimeline;
+                charts.performance.data.labels = timeline.map(p => 
+                    new Date(p.date).toLocaleDateString()
+                );
+                charts.performance.data.datasets[0].data = timeline.map(p => 
+                    (p.accuracy * 100).toFixed(1)
+                );
+                charts.performance.update();
+            }
+
+            // Feature Importance
+            if (mlData.featureImportance && charts.features) {
+                const topFeatures = mlData.featureImportance.slice(0, 8);
+                charts.features.data.labels = topFeatures.map(f => f.feature);
+                charts.features.data.datasets[0].data = topFeatures.map(f => 
+                    (f.importance * 100).toFixed(1)
+                );
+                charts.features.update();
+            }
+
+            // Profit Timeline
+            if (mlData.profitTimeline && charts.profit) {
+                const profits = mlData.profitTimeline;
+                charts.profit.data.labels = profits.map(p => 
+                    new Date(p.date).toLocaleDateString()
+                );
+                charts.profit.data.datasets[0].data = profits.map(p => p.cumulativeProfit);
+                charts.profit.update();
+            }
+
+            // Accuracy Trend
+            if (mlData.accuracyTrend && charts.accuracy) {
+                const trend = mlData.accuracyTrend;
+                charts.accuracy.data.labels = trend.map(t => 
+                    new Date(t.date).toLocaleDateString()
+                );
+                charts.accuracy.data.datasets[0].data = trend.map(t => 
+                    (t.rollingAccuracy * 100).toFixed(1)
+                );
+                charts.accuracy.update();
+            }
+        }
+
+        async function trainModel() {
+            const btn = document.getElementById('train-model-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '🚀 Training...';
+            btn.disabled = true;
+            
+            try {
+                const result = await API.trainModel();
+                UTILS.showNotification(
+                    '🎯 Training Completato',
+                    `Modello addestrato con accuratezza ${(result.metrics.accuracy * 100).toFixed(1)}%`,
+                    'success'
+                );
+                
+                // Reload data
+                await loadMLAnalytics();
+                
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Training',
+                    error.message,
+                    'error'
+                );
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function manualRetrain() {
+            const btn = document.getElementById('manual-retrain-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '⏳ Retraining...';
+            btn.disabled = true;
+            
+            try {
+                const result = await API.trainModel();
+                UTILS.showNotification(
+                    '✅ Retrain Completato',
+                    'Modello riaddestrato con successo',
+                    'success'
+                );
+                
+                await loadMLAnalytics();
+                
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Retrain',
+                    error.message,
+                    'error'
+                );
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function detectPatterns() {
+            const btn = document.getElementById('detect-patterns-btn');
+            const originalText = btn.textContent;
+            
+            document.getElementById('patterns-loading').classList.remove('hidden');
+            btn.textContent = '🔄 Rilevando...';
+            btn.disabled = true;
+            
+            try {
+                // Detect patterns for multiple symbols
+                const symbols = ['EURUSD', 'BTCUSD', 'US30', 'XAUUSD'];
+                const results = await Promise.all(
+                    symbols.map(symbol => API.detectPatterns(symbol))
+                );
+                
+                // Aggregate results
+                let totalHeadShoulders = 0;
+                let totalDoubleTop = 0;
+                let totalTriangles = 0;
+                let totalFlags = 0;
+                
+                results.forEach(result => {
+                    if (result.patterns) {
+                        totalHeadShoulders += result.patterns.headShoulders || 0;
+                        totalDoubleTop += result.patterns.doubleTop || 0;
+                        totalTriangles += result.patterns.triangles || 0;
+                        totalFlags += result.patterns.flags || 0;
+                    }
+                });
+                
+                // Update display
+                document.getElementById('head-shoulders').textContent = totalHeadShoulders;
+                document.getElementById('double-top').textContent = totalDoubleTop;
+                document.getElementById('triangles').textContent = totalTriangles;
+                document.getElementById('flags').textContent = totalFlags;
+                
+                UTILS.showNotification(
+                    '🔍 Pattern Rilevati',
+                    `Trovati ${totalHeadShoulders + totalDoubleTop + totalTriangles + totalFlags} pattern totali`,
+                    'success'
+                );
+                
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Rilevamento',
+                    error.message,
+                    'error'
+                );
+            } finally {
+                document.getElementById('patterns-loading').classList.add('hidden');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function exportData() {
+            if (!mlData) {
+                UTILS.showNotification(
+                    '⚠️ Nessun Dato',
+                    'Nessun dato ML disponibile per l\'export',
+                    'warning'
+                );
+                return;
+            }
+            
+            const dataStr = JSON.stringify(mlData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `ml-analytics-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            UTILS.showNotification(
+                '📊 Export Completato',
+                'Dati ML esportati con successo',
+                'success'
+            );
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "name": "ai-trading-2.0",
+  "version": "2.0.0",
+  "description": "🚀 AI Trading 2.0 - Complete HTML+JavaScript Trading System",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "build": "npm run build:render",
+    "build:render": "echo 'Building AI Trading 2.0 for Render deployment...' && echo 'Static build complete - all files ready for deployment'",
+    "start": "echo 'Starting production server on Render'",
+    "deploy": "vercel --prod",
+    "deploy:render": "echo 'Deploy to Render.com using render.yaml configuration'"
+  },
+  "keywords": [
+    "trading",
+    "ai",
+    "cryptocurrency",
+    "forex",
+    "mt5",
+    "automated-trading",
+    "machine-learning",
+    "technical-analysis"
+  ],
+  "author": "AI Trading 2.0 Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/ai-trading-2.0"
+  },
+  "homepage": "https://ai-trading-2.vercel.app",
+  "bugs": {
+    "url": "https://github.com/your-org/ai-trading-2.0/issues"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

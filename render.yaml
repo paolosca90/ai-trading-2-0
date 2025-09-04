@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: ai-trading-2-0
+    env: static
+    staticPublishPath: ./
+    buildCommand: echo "Building AI Trading 2.0 static site..."
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options  
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: geolocation=(), microphone=(), camera=()
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_BASE_URL  
+        value: https://backend-kzbh2zv05-paolos-projects-dc6990da.vercel.app
+      - key: MT5_HOST
+        value: 154.61.187.189
+      - key: MT5_PORT
+        value: 8080
+      - key: SUPABASE_URL
+        value: https://jeewrxgqkgvtrphebcxz.supabase.co
+      - key: SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZXdyeGdxa2d2dHJwaGViY3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY2MzAzNDksImV4cCI6MjA3MjIwNjM0OX0.W1ufn1l_zArMyAaameVwo2a4Z7cmSoGV27zvki57tMI

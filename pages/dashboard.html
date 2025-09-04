@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Trading 2.0</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="../index.html" class="nav-brand">🚀 AI Trading 2.0</a>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+                <li><a href="trade.html" class="nav-link">Trade</a></li>
+                <li><a href="mldashboard.html" class="nav-link">ML Analytics</a></li>
+                <li><a href="history.html" class="nav-link">Storia</a></li>
+                <li><a href="settings.html" class="nav-link">Impostazioni</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold">🚀 AI Trading Boost Dashboard</h1>
+                    <p class="text-gray">Sistema di trading automatizzato con intelligenza artificiale avanzata</p>
+                    <div id="last-update" class="flex items-center gap-2 mt-2">
+                        <span class="text-sm text-green">⏰</span>
+                        <span class="text-sm text-green" id="update-time">Caricamento...</span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="quick-trade-btn" class="btn btn-gradient">⚡ Genera Segnale</button>
+                    <button id="train-model-btn" class="btn btn-outline">🤖 Addestra AI</button>
+                    <button id="detect-patterns-btn" class="btn btn-outline">🔍 Rileva Pattern</button>
+                </div>
+            </div>
+
+            <!-- MT5 Connection Status -->
+            <div id="mt5-status-card" class="card mb-6">
+                <div class="card-content">
+                    <div id="mt5-status-loading" class="flex items-center justify-center p-4">
+                        <div class="spinner mr-3"></div>
+                        <span>Verificando connessione MT5...</span>
+                    </div>
+                    
+                    <div id="mt5-status-connected" class="hidden">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-2">📡</span>
+                                    <div class="badge badge-success mr-3">LIVE</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-green">MT5 Connesso e Attivo</h4>
+                                    <p class="text-sm text-gray">
+                                        Account: <span id="mt5-account">-</span> | 
+                                        Saldo: $<span id="mt5-balance">0.00</span> | 
+                                        Server: <span id="mt5-server">-</span>
+                                    </p>
+                                    <p class="text-xs text-green">
+                                        Ultimo aggiornamento: <span id="mt5-last-update">-</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="mt5-refresh-btn" class="btn btn-outline btn-small">🔄 Ricontrolla</button>
+                                <button id="mt5-setup-btn" class="btn btn-outline btn-small">⚙️ Configura</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="mt5-status-disconnected" class="hidden">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-2">❌</span>
+                                    <div class="badge badge-danger mr-3">OFFLINE</div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-red">MT5 Disconnesso</h4>
+                                    <p class="text-sm text-red" id="mt5-error-message">
+                                        MT5 non raggiungibile. Assicurati che sia attivo sul PC.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="mt5-reconnect-btn" class="btn btn-danger btn-small">🔄 Riconnetti</button>
+                                <button id="mt5-setup2-btn" class="btn btn-outline btn-small">⚙️ Configura</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sistema Automatico Stats -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <h2 class="text-xl font-semibold">🤖 Sistema Automatico</h2>
+                    <div class="badge badge-primary">H24 Attivo</div>
+                    <div id="top-symbol-badge" class="badge badge-outline hidden">
+                        Top: <span id="top-symbol">-</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="signals-generated">0</div>
+                        <div class="stat-label">Segnali Generati</div>
+                        <div class="stat-description">Nelle ultime 24h</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="signals-executed">0</div>
+                        <div class="stat-label">Segnali Eseguiti</div>
+                        <div class="stat-description">Automaticamente</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="trades-closed">0</div>
+                        <div class="stat-label">Trade Chiusi</div>
+                        <div class="stat-description">Completati con esito</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-confidence">0%</div>
+                        <div class="stat-label">Confidenza Media</div>
+                        <div class="stat-description">Dei segnali generati</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Trading -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <h2 class="text-xl font-semibold">📊 Performance Trading</h2>
+                    <div id="performance-badge" class="badge badge-success hidden">
+                        <span id="total-trades">0</span> trade reali
+                    </div>
+                    <div class="badge badge-outline">Ultimi 30 giorni</div>
+                </div>
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-profit">$0.00</div>
+                        <div class="stat-label">Profitto Totale</div>
+                        <div class="stat-description">Ultimi 30 giorni (dati reali)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="win-rate">0%</div>
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-description">Percentuale trade in profitto</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="profit-factor">0</div>
+                        <div class="stat-label">Profit Factor</div>
+                        <div class="stat-description">Rapporto profitto/perdita</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="best-trade">$0</div>
+                        <div class="stat-label">Miglior Trade</div>
+                        <div class="stat-description">Trade più profittevole</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="current-streak">0</div>
+                        <div class="stat-label">Streak Corrente</div>
+                        <div class="stat-description">Vittorie/sconfitte consecutive</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="sharpe-ratio">0</div>
+                        <div class="stat-label">Sharpe Ratio</div>
+                        <div class="stat-description">Rendimento per il rischio</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Segnali AI Automatici -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-xl font-semibold">🎯 Segnali AI Automatici</h2>
+                        <div class="badge badge-primary">Top 3 Opportunità</div>
+                        <div id="active-signals-badge" class="badge badge-success hidden">
+                            <span id="active-signals-count">0</span> attivi
+                        </div>
+                    </div>
+                    <button id="refresh-signals-btn" class="btn btn-outline btn-small">
+                        🔄 Aggiorna
+                    </button>
+                </div>
+                
+                <div id="signals-container" class="grid grid-cols-3 gap-6">
+                    <!-- Loading state -->
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <span class="loading-text">Caricamento segnali...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <span class="loading-text">Caricamento segnali...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <span class="loading-text">Caricamento segnali...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">✨</span>
+                        <h4 class="font-semibold text-blue">Sistema Automatico H24</h4>
+                    </div>
+                    <p class="text-sm text-blue">
+                        Il sistema genera automaticamente segnali ogni 2 minuti, seleziona i 3 migliori per confidenza, 
+                        li esegue automaticamente e registra i risultati per migliorare continuamente l'AI.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ML Performance Stats -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">🤖 Performance Machine Learning</h2>
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="stat-card">
+                        <div class="stat-value" id="ml-accuracy">0%</div>
+                        <div class="stat-label">ML Accuracy</div>
+                        <div class="stat-description">Accuratezza del modello</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="ml-precision">0%</div>
+                        <div class="stat-label">Precision</div>
+                        <div class="stat-description">Precisione predizioni</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="ml-f1score">0%</div>
+                        <div class="stat-label">F1 Score</div>
+                        <div class="stat-description">Bilanciamento precision/recall</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="ml-predictions">0</div>
+                        <div class="stat-label">Predizioni</div>
+                        <div class="stat-description">Totale predizioni generate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trading Activity -->
+            <div class="grid grid-cols-2 gap-6 mb-8">
+                <!-- Posizioni Aperte -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="flex items-center justify-between">
+                            <h3 class="card-title">📈 Posizioni Aperte</h3>
+                            <div class="badge badge-outline" id="positions-count">0 posizioni</div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div id="positions-loading" class="loading">
+                            <div class="spinner"></div>
+                            <span class="loading-text">Caricamento posizioni...</span>
+                        </div>
+                        <div id="positions-error" class="hidden text-center py-8">
+                            <div class="text-red mb-2">❌ Errore nel caricamento</div>
+                            <button id="positions-retry" class="btn btn-outline btn-small">🔄 Riprova</button>
+                        </div>
+                        <div id="positions-empty" class="hidden text-center py-8">
+                            <div class="text-gray">📭 Nessuna posizione aperta</div>
+                        </div>
+                        <div id="positions-table" class="hidden">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Asset</th>
+                                        <th>Tipo</th>
+                                        <th>Volume</th>
+                                        <th>P&L</th>
+                                        <th>Azione</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="positions-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Storico Trade Recenti -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="flex items-center justify-between">
+                            <h3 class="card-title">📊 Storico Trade Recenti</h3>
+                            <div class="badge badge-outline" id="history-count">0 trade</div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div id="history-loading" class="loading">
+                            <div class="spinner"></div>
+                            <span class="loading-text">Caricamento storico...</span>
+                        </div>
+                        <div id="history-error" class="hidden text-center py-8">
+                            <div class="text-red mb-2">❌ Errore nel caricamento</div>
+                            <button id="history-retry" class="btn btn-outline btn-small">🔄 Riprova</button>
+                        </div>
+                        <div id="history-empty" class="hidden text-center py-8">
+                            <div class="text-gray">📭 Nessun trade completato</div>
+                        </div>
+                        <div id="history-table" class="hidden">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Asset</th>
+                                        <th>Tipo</th>
+                                        <th>Esito</th>
+                                        <th>P&L</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sistema Automatico Guide -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title text-blue">🚀 Sistema Automatico Attivo</h3>
+                </div>
+                <div class="card-content">
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">🤖</div>
+                            <h4 class="font-semibold text-blue">Generazione Automatica</h4>
+                            <p class="text-sm text-gray">Il sistema genera segnali ogni 2 minuti su 20+ asset</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">🎯</div>
+                            <h4 class="font-semibold text-blue">Selezione Intelligente</h4>
+                            <p class="text-sm text-gray">Seleziona automaticamente i 3 segnali con maggiore confidenza</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">📊</div>
+                            <h4 class="font-semibold text-blue">Apprendimento Continuo</h4>
+                            <p class="text-sm text-gray">Registra i risultati e migliora l'AI automaticamente</p>
+                        </div>
+                    </div>
+                    <div class="text-center mt-6">
+                        <p class="text-sm text-blue mb-4">
+                            Il sistema è attivo H24. Le prime statistiche appariranno dopo i primi trade completati.
+                        </p>
+                        <button id="manual-signal-btn" class="btn btn-gradient">🎯 Genera Segnale Manuale</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        // Dashboard State
+        let dashboardData = {
+            mt5Status: null,
+            signalStats: null,
+            performance: null,
+            mlAnalytics: null,
+            positions: null,
+            history: null,
+            topSignals: null
+        };
+
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            setupEventListeners();
+            
+            // Auto-refresh data every 30 seconds
+            setInterval(refreshDashboard, 30000);
+        });
+
+        function setupEventListeners() {
+            // Button event listeners
+            document.getElementById('quick-trade-btn').addEventListener('click', () => {
+                window.location.href = 'trade.html';
+            });
+            
+            document.getElementById('train-model-btn').addEventListener('click', trainModel);
+            document.getElementById('detect-patterns-btn').addEventListener('click', detectPatterns);
+            document.getElementById('refresh-signals-btn').addEventListener('click', refreshSignals);
+            document.getElementById('manual-signal-btn').addEventListener('click', () => {
+                window.location.href = 'trade.html';
+            });
+            
+            // MT5 buttons
+            document.getElementById('mt5-refresh-btn')?.addEventListener('click', checkMT5Status);
+            document.getElementById('mt5-reconnect-btn')?.addEventListener('click', checkMT5Status);
+            document.getElementById('mt5-setup-btn')?.addEventListener('click', () => {
+                window.location.href = 'mt5-setup.html';
+            });
+            document.getElementById('mt5-setup2-btn')?.addEventListener('click', () => {
+                window.location.href = 'mt5-setup.html';
+            });
+            
+            // Retry buttons
+            document.getElementById('positions-retry')?.addEventListener('click', loadPositions);
+            document.getElementById('history-retry')?.addEventListener('click', loadHistory);
+        }
+
+        async function initializeDashboard() {
+            updateLastUpdateTime();
+            
+            // Load all data in parallel
+            await Promise.all([
+                checkMT5Status(),
+                loadSignalStats(),
+                loadPerformance(),
+                loadMLAnalytics(),
+                loadPositions(),
+                loadHistory(),
+                loadTopSignals()
+            ]);
+        }
+
+        async function refreshDashboard() {
+            await Promise.all([
+                loadSignalStats(),
+                loadPerformance(),
+                loadTopSignals()
+            ]);
+            updateLastUpdateTime();
+        }
+
+        function updateLastUpdateTime() {
+            const now = new Date();
+            document.getElementById('update-time').textContent = 
+                `Ultimo aggiornamento: ${now.toLocaleTimeString()}`;
+        }
+
+        // MT5 Status
+        async function checkMT5Status() {
+            const loadingEl = document.getElementById('mt5-status-loading');
+            const connectedEl = document.getElementById('mt5-status-connected');
+            const disconnectedEl = document.getElementById('mt5-status-disconnected');
+            
+            loadingEl.classList.remove('hidden');
+            connectedEl.classList.add('hidden');
+            disconnectedEl.classList.add('hidden');
+            
+            try {
+                const status = await API.getMT5Status();
+                dashboardData.mt5Status = status;
+                
+                if (status.connected) {
+                    document.getElementById('mt5-account').textContent = status.account || CONFIG.MT5.LOGIN;
+                    document.getElementById('mt5-balance').textContent = (status.balance || 0).toFixed(2);
+                    document.getElementById('mt5-server').textContent = status.server || CONFIG.MT5.SERVER;
+                    document.getElementById('mt5-last-update').textContent = new Date().toLocaleTimeString();
+                    
+                    loadingEl.classList.add('hidden');
+                    connectedEl.classList.remove('hidden');
+                } else {
+                    document.getElementById('mt5-error-message').textContent = 
+                        status.error || 'MT5 non raggiungibile. Assicurati che sia attivo sul PC.';
+                    
+                    loadingEl.classList.add('hidden');
+                    disconnectedEl.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('MT5 Status Error:', error);
+                document.getElementById('mt5-error-message').textContent = error.message;
+                
+                loadingEl.classList.add('hidden');
+                disconnectedEl.classList.remove('hidden');
+            }
+        }
+
+        // Signal Stats
+        async function loadSignalStats() {
+            try {
+                const stats = await API.getSignalStats();
+                dashboardData.signalStats = stats;
+                
+                document.getElementById('signals-generated').textContent = stats.totalGenerated || 0;
+                document.getElementById('signals-executed').textContent = stats.totalExecuted || 0;
+                document.getElementById('trades-closed').textContent = stats.totalClosed || 0;
+                document.getElementById('avg-confidence').textContent = `${(stats.avgConfidence || 0).toFixed(1)}%`;
+                
+                if (stats.topPerformingSymbol && stats.topPerformingSymbol !== 'N/A') {
+                    document.getElementById('top-symbol').textContent = stats.topPerformingSymbol;
+                    document.getElementById('top-symbol-badge').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Signal Stats Error:', error);
+            }
+        }
+
+        // Performance Data
+        async function loadPerformance() {
+            try {
+                const performance = await API.getPerformance();
+                dashboardData.performance = performance;
+                
+                const hasRealData = performance && performance.totalTrades > 0;
+                
+                // Update stats
+                document.getElementById('total-profit').textContent = 
+                    UTILS.formatCurrency(performance.totalProfitLoss || 0);
+                document.getElementById('win-rate').textContent = 
+                    `${(performance.winRate || 0).toFixed(1)}%`;
+                document.getElementById('profit-factor').textContent = 
+                    (performance.profitFactor || 0).toFixed(2);
+                document.getElementById('best-trade').textContent = 
+                    UTILS.formatCurrency(performance.bestTrade || 0);
+                document.getElementById('current-streak').textContent = 
+                    `${Math.abs(performance.currentStreak || 0)}${(performance.currentStreak || 0) >= 0 ? ' W' : ' L'}`;
+                document.getElementById('sharpe-ratio').textContent = 
+                    (performance.sharpeRatio || 0).toFixed(2);
+                
+                // Update badge
+                if (hasRealData) {
+                    document.getElementById('total-trades').textContent = performance.totalTrades;
+                    document.getElementById('performance-badge').classList.remove('hidden');
+                }
+                
+                // Color stats based on values
+                updateStatColors();
+            } catch (error) {
+                console.error('Performance Error:', error);
+            }
+        }
+
+        function updateStatColors() {
+            const performance = dashboardData.performance;
+            if (!performance) return;
+            
+            // Color profit/loss
+            const profitEl = document.getElementById('total-profit');
+            profitEl.className = `stat-value ${UTILS.getProfitColor(performance.totalProfitLoss)}`;
+            
+            // Color win rate
+            const winRateEl = document.getElementById('win-rate');
+            const winRate = performance.winRate || 0;
+            winRateEl.className = `stat-value ${winRate >= 70 ? 'text-green' : winRate >= 50 ? 'text-warning' : 'text-red'}`;
+            
+            // Color profit factor
+            const pfEl = document.getElementById('profit-factor');
+            const pf = performance.profitFactor || 0;
+            pfEl.className = `stat-value ${pf >= 1.5 ? 'text-green' : pf >= 1 ? 'text-warning' : 'text-red'}`;
+            
+            // Color streak
+            const streakEl = document.getElementById('current-streak');
+            streakEl.className = `stat-value ${UTILS.getProfitColor(performance.currentStreak)}`;
+        }
+
+        // ML Analytics
+        async function loadMLAnalytics() {
+            try {
+                const ml = await API.getMLAnalytics();
+                dashboardData.mlAnalytics = ml;
+                
+                const accuracy = (ml.modelPerformance?.accuracy || 0) * 100;
+                const precision = (ml.modelPerformance?.precision || 0) * 100;
+                const f1Score = (ml.modelPerformance?.f1Score || 0) * 100;
+                
+                document.getElementById('ml-accuracy').textContent = `${accuracy.toFixed(1)}%`;
+                document.getElementById('ml-precision').textContent = `${precision.toFixed(1)}%`;
+                document.getElementById('ml-f1score').textContent = `${f1Score.toFixed(1)}%`;
+                document.getElementById('ml-predictions').textContent = 
+                    ml.predictionStats?.totalPredictions || 0;
+                
+                // Color ML accuracy
+                const accuracyEl = document.getElementById('ml-accuracy');
+                accuracyEl.className = `stat-value ${accuracy >= 80 ? 'text-green' : 'text-warning'}`;
+            } catch (error) {
+                console.error('ML Analytics Error:', error);
+            }
+        }
+
+        // Top Signals
+        async function loadTopSignals() {
+            try {
+                const signals = await API.getTopSignals();
+                dashboardData.topSignals = signals;
+                
+                displaySignals(signals.signals || []);
+                
+                if (signals.signals && signals.signals.length > 0) {
+                    document.getElementById('active-signals-count').textContent = signals.signals.length;
+                    document.getElementById('active-signals-badge').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Top Signals Error:', error);
+                displaySignalsError(error.message);
+            }
+        }
+
+        function displaySignals(signals) {
+            const container = document.getElementById('signals-container');
+            
+            if (signals.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full">
+                        <div class="card">
+                            <div class="card-content text-center py-8">
+                                <div class="text-4xl mb-4">✨</div>
+                                <h4 class="font-semibold mb-2">Sistema in Preparazione</h4>
+                                <p class="text-gray mb-4">
+                                    Il sistema automatico sta generando i primi segnali. Riprova tra qualche minuto.
+                                </p>
+                                <button onclick="forceSignalGeneration()" class="btn btn-outline">
+                                    🔄 Genera Ora
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = signals.map(signal => createSignalCard(signal)).join('');
+        }
+
+        function createSignalCard(signal) {
+            const confidenceClass = signal.confidence >= 80 ? 'confidence-high' : 
+                                  signal.confidence >= 60 ? 'confidence-medium' : 'confidence-low';
+            
+            const directionClass = signal.direction.toLowerCase() === 'long' ? 'long' : 'short';
+            const directionIcon = signal.direction.toLowerCase() === 'long' ? '↑' : '↓';
+            
+            return `
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-symbol">${signal.symbol}</div>
+                        <div class="signal-direction ${directionClass}">
+                            ${signal.direction.toUpperCase()} ${directionIcon}
+                        </div>
+                    </div>
+                    
+                    <div class="signal-metrics">
+                        <div class="signal-metric">
+                            <div class="signal-metric-label">Confidenza</div>
+                            <div class="signal-metric-value ${confidenceClass}">
+                                ${signal.confidence}% (${getConfidenceGrade(signal.confidence)})
+                            </div>
+                        </div>
+                        <div class="signal-metric">
+                            <div class="signal-metric-label">RR Ratio</div>
+                            <div class="signal-metric-value text-green">
+                                1:${(signal.rewardRiskRatio || 0).toFixed(1)}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Entry: ${signal.entryPrice}</span>
+                            <span class="text-green">TP: ${signal.takeProfitPrice}</span>
+                        </div>
+                        <div class="text-xs text-right text-red">
+                            SL: ${signal.stopLossPrice}
+                        </div>
+                        <div class="text-xs text-gray mt-2">
+                            Generato: ${new Date(signal.timestamp).toLocaleTimeString()}
+                        </div>
+                    </div>
+                    
+                    <button onclick="executeSignal('${signal.tradeId}')" 
+                            class="btn btn-primary w-full mt-4">
+                        ⚡ Esegui Trade
+                    </button>
+                </div>
+            `;
+        }
+
+        function getConfidenceGrade(confidence) {
+            if (confidence >= 90) return 'A+';
+            if (confidence >= 80) return 'A';
+            if (confidence >= 70) return 'B+';
+            if (confidence >= 60) return 'B';
+            return 'C';
+        }
+
+        function displaySignalsError(error) {
+            const container = document.getElementById('signals-container');
+            container.innerHTML = `
+                <div class="col-span-full">
+                    <div class="card border-red-200 bg-red-50">
+                        <div class="card-content text-center py-8">
+                            <div class="text-4xl mb-4">❌</div>
+                            <p class="text-red mb-4">Errore nel caricamento dei segnali automatici.</p>
+                            <p class="text-sm text-red mb-4">${error}</p>
+                            <button onclick="loadTopSignals()" class="btn btn-outline">
+                                🔄 Riprova
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Positions
+        async function loadPositions() {
+            const loadingEl = document.getElementById('positions-loading');
+            const errorEl = document.getElementById('positions-error');
+            const emptyEl = document.getElementById('positions-empty');
+            const tableEl = document.getElementById('positions-table');
+            
+            loadingEl.classList.remove('hidden');
+            errorEl.classList.add('hidden');
+            emptyEl.classList.add('hidden');
+            tableEl.classList.add('hidden');
+            
+            try {
+                const positions = await API.getPositions();
+                dashboardData.positions = positions;
+                
+                loadingEl.classList.add('hidden');
+                
+                if (!positions.positions || positions.positions.length === 0) {
+                    emptyEl.classList.remove('hidden');
+                    document.getElementById('positions-count').textContent = '0 posizioni';
+                    return;
+                }
+                
+                document.getElementById('positions-count').textContent = `${positions.positions.length} posizioni`;
+                
+                const tbody = document.getElementById('positions-tbody');
+                tbody.innerHTML = positions.positions.map(pos => `
+                    <tr>
+                        <td class="font-semibold">${pos.symbol}</td>
+                        <td>
+                            <span class="badge ${pos.type === 'buy' ? 'badge-success' : 'badge-danger'}">
+                                ${pos.type.toUpperCase()}
+                            </span>
+                        </td>
+                        <td>${pos.volume}</td>
+                        <td class="${UTILS.getProfitColor(pos.profit)}">
+                            ${UTILS.formatCurrency(pos.profit)}
+                        </td>
+                        <td>
+                            <button onclick="closePosition(${pos.ticket})" 
+                                    class="btn btn-danger btn-small">
+                                Chiudi
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                tableEl.classList.remove('hidden');
+            } catch (error) {
+                console.error('Positions Error:', error);
+                loadingEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        // History
+        async function loadHistory() {
+            const loadingEl = document.getElementById('history-loading');
+            const errorEl = document.getElementById('history-error');
+            const emptyEl = document.getElementById('history-empty');
+            const tableEl = document.getElementById('history-table');
+            
+            loadingEl.classList.remove('hidden');
+            errorEl.classList.add('hidden');
+            emptyEl.classList.add('hidden');
+            tableEl.classList.add('hidden');
+            
+            try {
+                const history = await API.getHistory();
+                dashboardData.history = history;
+                
+                loadingEl.classList.add('hidden');
+                
+                if (!history.signals || history.signals.length === 0) {
+                    emptyEl.classList.remove('hidden');
+                    document.getElementById('history-count').textContent = '0 trade';
+                    return;
+                }
+                
+                const recentTrades = history.signals.slice(0, 5);
+                document.getElementById('history-count').textContent = `${history.signals.length} trade`;
+                
+                const tbody = document.getElementById('history-tbody');
+                tbody.innerHTML = recentTrades.map(trade => `
+                    <tr>
+                        <td class="font-semibold">${trade.symbol}</td>
+                        <td>
+                            <span class="badge ${trade.direction === 'LONG' ? 'badge-success' : 'badge-danger'}">
+                                ${trade.direction}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge ${trade.status === 'completed' ? 'badge-success' : 'badge-warning'}">
+                                ${trade.status}
+                            </span>
+                        </td>
+                        <td class="${UTILS.getProfitColor(trade.profitLoss)}">
+                            ${UTILS.formatCurrency(trade.profitLoss)}
+                        </td>
+                        <td class="text-sm text-gray">
+                            ${UTILS.formatTimestamp(trade.timestamp)}
+                        </td>
+                    </tr>
+                `).join('');
+                
+                tableEl.classList.remove('hidden');
+            } catch (error) {
+                console.error('History Error:', error);
+                loadingEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        // Actions
+        async function trainModel() {
+            const btn = document.getElementById('train-model-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Training...';
+            btn.disabled = true;
+            
+            try {
+                const result = await API.trainModel();
+                UTILS.showNotification(
+                    '🎯 Training Completato',
+                    `Modello addestrato con accuratezza ${(result.metrics.accuracy * 100).toFixed(1)}%`,
+                    'success'
+                );
+                await loadMLAnalytics();
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Training',
+                    error.message,
+                    'error'
+                );
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function detectPatterns() {
+            const btn = document.getElementById('detect-patterns-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Rilevando...';
+            btn.disabled = true;
+            
+            try {
+                const result = await API.detectPatterns('BTCUSD');
+                UTILS.showNotification(
+                    '🔍 Pattern Rilevati',
+                    `${result.patternsDetected} pattern trovati per BTCUSD`,
+                    'success'
+                );
+                await loadMLAnalytics();
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Rilevamento',
+                    error.message,
+                    'error'
+                );
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function refreshSignals() {
+            const btn = document.getElementById('refresh-signals-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = '🔄 Aggiornando...';
+            btn.disabled = true;
+            
+            try {
+                await loadTopSignals();
+                await loadSignalStats();
+                UTILS.showNotification(
+                    '✅ Segnali Aggiornati',
+                    'Segnali ricaricati con successo',
+                    'success'
+                );
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Aggiornamento',
+                    error.message,
+                    'error'
+                );
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function forceSignalGeneration() {
+            try {
+                const result = await API.forceSignalGeneration();
+                if (result.success) {
+                    UTILS.showNotification(
+                        '🔄 Generazione Avviata',
+                        result.message,
+                        'success'
+                    );
+                    
+                    // Refresh signals after a delay
+                    setTimeout(async () => {
+                        await loadTopSignals();
+                        await loadSignalStats();
+                    }, 3000);
+                } else {
+                    UTILS.showNotification(
+                        '❌ Errore',
+                        result.message,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Generazione',
+                    error.message,
+                    'error'
+                );
+            }
+        }
+
+        async function executeSignal(tradeId) {
+            try {
+                const result = await API.executeTradeSignal(tradeId, 0.1);
+                UTILS.showNotification(
+                    '🚀 Trade Eseguito',
+                    `Trade eseguito con successo! Order ID: ${result.orderId}`,
+                    'success'
+                );
+                
+                // Refresh positions and performance
+                await Promise.all([
+                    loadPositions(),
+                    loadPerformance()
+                ]);
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Esecuzione',
+                    error.message,
+                    'error'
+                );
+            }
+        }
+
+        async function closePosition(ticket) {
+            try {
+                await API.closePosition(ticket);
+                UTILS.showNotification(
+                    '✅ Posizione Chiusa',
+                    'Posizione chiusa con successo.',
+                    'success'
+                );
+                
+                // Refresh positions and performance
+                await Promise.all([
+                    loadPositions(),
+                    loadPerformance()
+                ]);
+            } catch (error) {
+                UTILS.showNotification(
+                    '❌ Errore Chiusura',
+                    error.message,
+                    'error'
+                );
+            }
+        }
+
+        // Make functions global for onclick handlers
+        window.executeSignal = executeSignal;
+        window.closePosition = closePosition;
+        window.forceSignalGeneration = forceSignalGeneration;
+    </script>
+</body>
+</html>

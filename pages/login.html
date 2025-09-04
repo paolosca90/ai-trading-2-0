@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accedi - AI Trading 2.0</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="min-h-screen flex items-center justify-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md mx-4">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2">🚀 AI Trading 2.0</h1>
+                <p class="text-gray">Accedi alla piattaforma di trading automatizzato</p>
+            </div>
+            
+            <form id="login-form" class="space-y-6">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" id="login-btn" class="btn btn-gradient w-full">
+                    <span id="login-text">🚀 Accedi</span>
+                    <div id="login-spinner" class="hidden flex items-center justify-center">
+                        <div class="spinner mr-2"></div>
+                        Accesso in corso...
+                    </div>
+                </button>
+            </form>
+            
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray">
+                    Non hai un account? 
+                    <a href="register.html" class="text-blue font-semibold hover:underline">Registrati</a>
+                </p>
+            </div>
+            
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <h4 class="font-semibold text-blue mb-2">🎯 Demo Account</h4>
+                <p class="text-sm text-blue mb-3">Prova subito la piattaforma con un account demo</p>
+                <button id="demo-btn" class="btn btn-outline w-full">📊 Accedi alla Demo</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const btn = document.getElementById('login-btn');
+            btn.disabled = true;
+            document.getElementById('login-text').classList.add('hidden');
+            document.getElementById('login-spinner').classList.remove('hidden');
+            
+            try {
+                const result = await API.login(email, password);
+                localStorage.setItem('auth_token', result.token);
+                localStorage.setItem('user_data', JSON.stringify(result.user));
+                
+                UTILS.showNotification('✅ Accesso Effettuato', 'Benvenuto nella piattaforma!', 'success');
+                setTimeout(() => window.location.href = 'dashboard.html', 1000);
+                
+            } catch (error) {
+                UTILS.showNotification('❌ Errore Accesso', error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                document.getElementById('login-text').classList.remove('hidden');
+                document.getElementById('login-spinner').classList.add('hidden');
+            }
+        });
+        
+        document.getElementById('demo-btn').addEventListener('click', function() {
+            // Set demo mode
+            localStorage.setItem('demo_mode', 'true');
+            localStorage.setItem('auth_token', 'demo_token');
+            localStorage.setItem('user_data', JSON.stringify({
+                name: 'Demo User',
+                email: 'demo@aitrading.com',
+                plan: 'demo'
+            }));
+            
+            window.location.href = 'dashboard.html';
+        });
+    </script>
+</body>
+</html>
