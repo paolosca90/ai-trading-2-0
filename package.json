@@ -24,7 +24,9 @@
   "author": "AI Trading 2.0 Team",
   "license": "MIT",
   "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "http-server": "^14.1.1"
+  },
   "engines": {
     "node": ">=16.0.0"
   },
