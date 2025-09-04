@@ -44,11 +44,9 @@ if "%MT5_LOGIN%"=="" (
     exit /b 1
 )
 
-echo Password MT5 (verrà nascosta):
-powershell -Command "$pwd = Read-Host -AsSecureString; $plainPwd = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($pwd)); Write-Host $plainPwd" > temp_password.txt 2>nul
-
-set /p MT5_PASSWORD=<temp_password.txt
-del temp_password.txt 2>nul
+REM Lettura password semplice e sicura
+echo Inserisci la password MT5 (verra nascosta):
+for /f "delims=" %%i in ('powershell -Command "Read-Host"') do set MT5_PASSWORD=%%i
 
 if "%MT5_PASSWORD%"=="" (
     echo ❌ Password obbligatoria!
