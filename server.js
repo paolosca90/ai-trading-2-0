@@ -1,11 +1,18 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration for all origins (since we removed Vercel)
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL || 'https://jeewrxgqkgvtrphebcxz.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZXdyeGdxa2d2dHJwaGViY3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY2MzAzNDksImV4cCI6MjA3MjIwNjM0OX0.W1ufn1l_zArMyAaameVwo2a4Z7cmSoGV27zvki57tMI';
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// CORS configuration for all origins
 app.use(cors({
   origin: true, // Allow all origins for flexibility
   credentials: true,
@@ -20,10 +27,6 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files
 app.use(express.static('.'));
 
-// In-memory user storage (for demo purposes)
-const users = [];
-const tradingSignals = [];
-
 // API Routes
 
 // Health check
@@ -36,22 +39,35 @@ app.post('/auth/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
+    // Hash password (in produzione usa bcrypt)
+    const hashedPassword = password; // Semplificato per demo
+
     // Check if user exists
-    const existingUser = users.find(user => user.email === email);
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
+
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    // Create new user
-    const newUser = {
-      id: users.length + 1,
-      email,
-      name,
-      createdAt: new Date().toISOString(),
-      sessions: []
-    };
+    // Create new user in Supabase
+    const { data: newUser, error } = await supabase
+      .from('users')
+      .insert([
+        {
+          email,
+          password: hashedPassword,
+          name,
+          created_at: new Date().toISOString()
+        }
+      ])
+      .select()
+      .single();
 
-    users.push(newUser);
+    if (error) throw error;
 
     console.log(`✅ New user registered: ${email}`);
     res.json({
@@ -68,15 +84,32 @@ app.post('/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user (simplified - no password check for demo)
-    const user = users.find(user => user.email === email);
-    if (!user) {
+    // Find user in Supabase (simplified - no password check for demo)
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (error || !user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Create session
+    // Create session in Supabase
     const token = `session_${Date.now()}_${user.id}`;
-    user.sessions.push(token);
+    const { error: sessionError } = await supabase
+      .from('user_sessions')
+      .insert([
+        {
+          user_id: user.id,
+          session_token: token,
+          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ]);
+
+    if (sessionError) {
+      console.error('Session creation error:', sessionError);
+    }
 
     console.log(`✅ User logged in: ${email}`);
     res.json({
@@ -98,18 +131,24 @@ app.get('/auth/profile', async (req, res) => {
       return res.status(401).json({ error: 'No token provided' });
     }
 
-    // Find user by session token
-    const user = users.find(user => user.sessions.includes(token));
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid token' });
+    // Find session in Supabase
+    const { data: session, error: sessionError } = await supabase
+      .from('user_sessions')
+      .select('user_id, users:id,email,name,created_at')
+      .eq('session_token', token)
+      .eq('expires_at', '>', new Date().toISOString())
+      .single();
+
+    if (sessionError || !session) {
+      return res.status(401).json({ error: 'Invalid or expired token' });
     }
 
     res.json({
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdAt: user.createdAt
+        id: session.user_id,
+        name: session.users.name,
+        email: session.users.email,
+        createdAt: session.users.created_at
       }
     });
   } catch (error) {
@@ -163,23 +202,29 @@ app.post('/analysis/predict', async (req, res) => {
     const probability = 0.7 + Math.random() * 0.25; // 70-95% probability
 
     const signal = {
-      id: Date.now(),
       symbol,
       strategy,
       direction,
       probability: Math.round(probability * 100) / 100,
-      riskFactor: 1.0 + Math.random() * 2.5, // 1.0-3.5 risk factor
+      risk_factor: 1.0 + Math.random() * 2.5, // 1.0-3.5 risk factor
       confidence: Math.floor(Math.random() * 5) + 1, // 1-5 stars
-      timestamp: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       status: 'active'
     };
 
-    tradingSignals.push(signal);
+    // Save to Supabase
+    const { data: savedSignal, error } = await supabase
+      .from('trading_signals')
+      .insert([signal])
+      .select()
+      .single();
 
-    console.log(`✅ Generated signal: ${signal.symbol} ${signal.direction} (${Math.round(probability * 100)}%)`);
+    if (error) throw error;
+
+    console.log(`✅ Generated signal: ${savedSignal.symbol} ${savedSignal.direction} (${Math.round(savedSignal.probability * 100)}%)`);
     res.json({
       message: 'Signal generated',
-      signal
+      signal: savedSignal
     });
   } catch (error) {
     console.error('❌ Prediction error:', error);
