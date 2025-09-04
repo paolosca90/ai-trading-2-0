@@ -6,7 +6,7 @@
 -- ============================================================
 
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL, -- Store hashed passwords in production!
@@ -19,8 +19,8 @@ CREATE TABLE users (
 -- ============================================================
 
 CREATE TABLE user_sessions (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     session_token VARCHAR(255) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     expires_at TIMESTAMP NOT NULL
@@ -31,7 +31,7 @@ CREATE TABLE user_sessions (
 -- ============================================================
 
 CREATE TABLE trading_signals (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     symbol VARCHAR(20) NOT NULL,
     strategy VARCHAR(100) NOT NULL,
     direction VARCHAR(10) NOT NULL, -- 'LONG' or 'SHORT'
@@ -47,7 +47,7 @@ CREATE TABLE trading_signals (
 -- ============================================================
 
 CREATE TABLE trading_performance (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     date DATE NOT NULL,
     total_profit DECIMAL(10,2),
     win_rate DECIMAL(5,2), -- Percentage
@@ -69,7 +69,7 @@ CREATE TABLE trading_performance (
 -- ============================================================
 
 CREATE TABLE ml_analytics (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     model_name VARCHAR(100),
     accuracy DECIMAL(5,4), -- 0.0000 to 1.0000
     precision DECIMAL(5,4),
@@ -87,7 +87,7 @@ CREATE TABLE ml_analytics (
 -- ============================================================
 
 CREATE TABLE mt5_status (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     connected BOOLEAN DEFAULT FALSE,
     server VARCHAR(100),
     account VARCHAR(20),
@@ -104,7 +104,7 @@ CREATE TABLE mt5_status (
 -- ============================================================
 
 CREATE TABLE mt5_positions (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     ticket BIGINT UNIQUE NOT NULL,
     symbol VARCHAR(20) NOT NULL,
     type VARCHAR(10) NOT NULL, -- 'BUY' or 'SELL'
@@ -147,24 +147,6 @@ CREATE INDEX idx_mt5_positions_status ON mt5_positions(status);
 CREATE INDEX idx_mt5_positions_open_time ON mt5_positions(open_time);
 
 -- ============================================================
--- SAMPLE DATA (Optional - remove in production)
--- ============================================================
-
--- Sample user (password: "password123" - SHA encrypted)
-INSERT INTO users (email, name, password) VALUES
-('demo@ai-trading.com', 'Demo User', '$2b$10$KuGJabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-
--- Sample trading signals
-INSERT INTO trading_signals (symbol, strategy, direction, probability, risk_factor, confidence) VALUES
-('EURUSD', 'ai_trend', 'LONG', 0.85, 1.5, 4),
-('BTCUSD', 'ml_pattern', 'SHORT', 0.72, 2.2, 3),
-('NAS100', 'technical', 'LONG', 0.91, 1.8, 5);
-
--- Sample MT5 status
-INSERT INTO mt5_status (connected, server, account, balance, version) VALUES
-(false, 'RoboForex-ECN', '67163307', 0.00, 'Not Connected');
-
--- ============================================================
 -- ROW LEVEL SECURITY (Recommended for production)
 -- ============================================================
 
@@ -179,8 +161,8 @@ ALTER TABLE mt5_positions ENABLE ROW LEVEL SECURITY;
 
 -- Create policies (customize these based on your auth system)
 -- Example: Users can only see their own data
-CREATE POLICY "Users can view their own data" ON users FOR SELECT USING (auth.uid() = id);
-CREATE POLICY "Users can update their own profile" ON users FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users can view their own data" ON users FOR SELECT USING (auth.uid() = id::text);
+CREATE POLICY "Users can update their own profile" ON users FOR UPDATE USING (auth.uid() = id::text);
 
 -- View created tables
 SELECT 'users', COUNT(*) FROM users
