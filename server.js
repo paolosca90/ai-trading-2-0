@@ -40,7 +40,61 @@ app.get('/config', (req, res) => {
   });
 });
 
-// CORS proxy for any additional API calls if needed
+// MT5 Bridge Proxy - Forward MT5 requests to Python bridge
+app.use('/api/mt5/*', async (req, res) => {
+  try {
+    const mt5Url = `http://154.61.187.189:8080${req.originalUrl.replace('/api/mt5', '')}`;
+
+    // Forward the request to MT5 bridge
+    const axios = require('axios');
+    const response = await axios({
+      method: req.method,
+      url: mt5Url,
+      data: req.body,
+      headers: {
+        'Content-Type': 'application/json',
+        ...Object.keys(req.headers).reduce((headers, key) => {
+          if (!key.startsWith('x-') && !['host', 'connection', 'keep-alive', 'proxy-authenticate'].includes(key.toLowerCase())) {
+            headers[key] = req.headers[key];
+          }
+          return headers;
+        }, {})
+      },
+      timeout: 30000, // 30 second timeout
+    });
+
+    res.status(response.status).json(response.data);
+
+  } catch (error) {
+    console.error('MT5 Proxy Error:', error.message);
+
+    if (error.response) {
+      // MT5 bridge returned an error
+      res.status(error.response.status).json({
+        error: 'MT5 Bridge Error',
+        details: error.response.data,
+        bridge_status: 'unreachable'
+      });
+    } else if (error.code === 'ECONNREFUSED') {
+      // Bridge server not running
+      res.status(503).json({
+        error: 'MT5 Bridge Not Available',
+        message: 'The MT5 Python bridge server is not running',
+        bridge_status: 'down'
+      });
+    } else {
+      // Other error
+      res.status(500).json({
+        error: 'MT5 Communication Error',
+        message: 'Unable to communicate with MT5 bridge',
+        details: error.message,
+        bridge_status: 'error'
+      });
+    }
+  }
+});
+
+// General CORS proxy for other API calls
 app.use('/api/*', async (req, res) => {
   // Could proxy to Supabase or other services if needed
   res.json({ message: 'CORS proxy active' });
