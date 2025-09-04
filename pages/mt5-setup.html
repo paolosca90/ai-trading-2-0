@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup MT5 - AI Trading 2.0</title>
+    <meta name="description" content="Guida passo-passo per collegare il tuo account MetaTrader 5 ad AI Trading 2.0">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="/" class="nav-brand">🚀 AI Trading 2.0</a>
+            <ul class="nav-menu">
+                <li><a href="/#features" class="nav-link">Funzionalità</a></li>
+                <li><a href="/#performance" class="nav-link">Performance</a></li>
+                <li><a href="/#testimonials" class="nav-link">Testimonianze</a></li>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="login.html" class="btn btn-primary">Accedi</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="py-20">
+            <div class="container">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl font-bold mb-6">Setup MetaTrader 5</h1>
+                    <p class="text-xl text-gray mb-8">
+                        Connetti il tuo account MT5 alla nostra piattaforma AI
+                        per iniziare il trading automatico in pochi minuti.
+                    </p>
+                </div>
+
+                <!-- Setup Steps -->
+                <div class="max-w-4xl mx-auto">
+                    <!-- Step 1: Download MT5 -->
+                    <div class="card mb-8">
+                        <div class="card-content">
+                            <div class="flex items-start gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                        1
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold mb-2">Scarica MetaTrader 5</h3>
+                                    <p class="text-gray mb-4">
+                                        Se non hai ancora MT5, scaricalo dal sito ufficiale di MetaQuotes.
+                                    </p>
+                                    <a href="https://www.metatrader4.com/it/download" target="_blank" class="btn btn-primary mb-4">
+                                        🎯 Scarica MT5 Gratis
+                                    </a>
+                                    <p class="text-sm text-gray">
+                                        🔒 MT5 è completamente gratuito e sicuro. Richiede Windows o l'emulatore per Windows.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Create Account -->
+                    <div class="card mb-8">
+                        <div class="card-content">
+                            <div class="flex items-start gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                        2
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold mb-2">Apri Account Demo</h3>
+                                    <p class="text-gray mb-4">
+                                        Crea un account demo per testare senza rischi finanziari.
+                                        Tutti gli asset sono disponibili anche in modalità demo.
+                                    </p>
+                                    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                                        <h4 class="font-semibold mb-2">Dati del server per l'Italia:</h4>
+                                        <code class="text-sm bg-gray-200 px-2 py-1 rounded">RoboForex-ECN</code>
+                                    </div>
+                                    <p class="text-sm text-gray">
+                                        💡 Il piano demo ha lo stesso numero di asset del conto reale a zero costi aggiuntivi.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Launch Algorithm Trading -->
+                    <div class="card mb-8">
+                        <div class="card-content">
+                            <div class="flex items-start gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                        3
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold mb-2">Abilita Trading Automatico</h3>
+                                    <p class="text-gray mb-4">
+                                        In MT5 vai nel menu Tools > Options > Expert Advisors e spunta "Allow automated trading".
+                                    </p>
+                                    <div class="space-y-2 mb-4">
+                                        <p class="text-sm">📋 Da seguire:</p>
+                                        <ul class="text-sm text-gray space-y-1 ml-4">
+                                            <li>• Tools → Options</li>
+                                            <li>• Tab "Expert Advisors"</li>
+                                            <li>• ✅ Enable automated trading</li>
+                                            <li>• ✅ Enable DLL imports</li>
+                                            <li>• ✅ Enable external expert imports</li>
+                                            <li>• ⚙️ Strategy tester → complete accesso</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-yellow-100 border border-yellow-300 p-4 rounded-lg">
+                                        <p class="text-sm text-yellow-800">
+                                            ⚠️ Questa impostazione è necessaria solo se vuoi permettere a MT5 di eseguire ordini automatici.
+                                            Per visualizzare segnali senza esecuzione automatica non è necessaria.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Connect to AI Platform -->
+                    <div class="card mb-8">
+                        <div class="card-content">
+                            <div class="flex items-start gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                        4
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-bold mb-2">Connetti alla nostra piattaforma AI</h3>
+                                    <p class="text-gray mb-4">
+                                        Ora sei pronto per collegare MT5 alla nostra tecnologia AI.
+                                    </p>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- Demo Account -->
+                                        <div class="border rounded-lg p-4">
+                                            <h4 class="font-semibold mb-3">🚀 Conto Demo</h4>
+                                            <ul class="text-sm text-gray space-y-1 mb-4">
+                                                <li>• Perfetto per imparare</li>
+                                                <li>• Zero rischi finanziari</li>
+                                                <li>• Tutti i mercati disponibili</li>
+                                                <li>• Trading algoritmico completo</li>
+                                            </ul>
+                                            <a href="dashboard.html" class="btn btn-primary btn-block">
+                                                ✅ Inizia Demo
+                                            </a>
+                                        </div>
+
+                                        <!-- Real Account -->
+                                        <div class="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-blue-50">
+                                            <h4 class="font-semibold mb-3">💰 Conto Reale</h4>
+                                            <ul class="text-sm text-gray space-y-1 mb-4">
+                                                <li>• Trading profittevole</li>
+                                                <li>• Win Rate 78% ottimizzato</li>
+                                                <li>• Risk Management AI</li>
+                                                <li>• Performance reali</li>
+                                            </ul>
+                                            <a href="dashboard.html" class="btn btn-primary btn-block">
+                                                🚀 Trading Reale
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Connection -->
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="text-xl font-bold mb-4">🔗 Stato della connessione MT5</h3>
+                            <div id="mt5-status" class="text-center p-4 bg-gray-100 rounded">
+                                <p class="text-gray">Verifica connessione in corso...</p>
+                            </div>
+
+                            <div class="mt-6 flex gap-4 justify-center">
+                                <a href="dashboard.html" class="btn btn-primary">
+                                    🏠 Vai alla Dashboard
+                                </a>
+                                <a href="/#features" class="btn btn-outline">
+                                    📚 Vedi Funzionalità
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Section -->
+                <div class="mt-16">
+                    <h3 class="text-2xl font-bold text-center mb-8">FAQ Setup MT5</h3>
+                    <div class="space-y-4 max-w-4xl mx-auto">
+                        <div class="card">
+                            <details class="p-6">
+                                <summary class="cursor-pointer font-semibold">Dove trovo dati conto MT5?</summary>
+                                <div class="mt-3 text-gray">
+                                    Nel numero di conto, password e server sono visibili nella sezione Tools > Options > Server.
+                                    Il Login e il Server sono anche nel contratto di apertura account.
+                                </div>
+                            </details>
+                        </div>
+                        <div class="card">
+                            <details class="p-6">
+                                <summary class="cursor-pointer font-semibold">Il trading automatico funziona su VPS?</summary>
+                                <div class="mt-3 text-gray">
+                                    Sì, molte persone usano VPS Windows per tenere MT5 sempre attivo.
+                                    Raccomandiamo VPS con almeno 2GB RAM e Windows Server 2016 o superiore.
+                                </div>
+                            </details>
+                        </div>
+                        <div class="card">
+                            <details class="p-6">
+                                <summary class="cursor-pointer font-semibold">Posso usare MT5 su Mac?</summary>
+                                <div class="mt-3 text-gray">
+                                    MT5 è nativo Windows. Sui Mac, usa:
+                                    <ul class="list-disc list-inside mt-2">
+                                        <li>Parallels Desktop o VMware Fusion</li>
+                                        <li>Boot Camp per installazione diretta</li>
+                                        <li>VPS Windows con accesso remoto</li>
+                                    </ul>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--color-gray-900); color: white; padding: 2rem 0; text-align: center;">
+        <div class="container">
+            <p>&copy; 2025 AI Trading 2.0. Tutti i diritti riservati.</p>
+            <p class="text-sm opacity-75 mt-2">
+                Trading comporta rischi. Le performance passate non garantiscono risultati futuri.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        console.log('🚀 AI Trading 2.0 - MT5 Setup page loaded!');
+
+        // Check MT5 connection status
+        async function checkMT5Status() {
+            if (window.API) {
+                try {
+                    const status = await window.API.getMT5Status();
+                    const statusDiv = document.getElementById('mt5-status');
+
+                    if (status.connected) {
+                        statusDiv.innerHTML = `
+                            <div class="text-green-600">
+                                <div class="text-lg font-bold">✅ MT5 Connesso!</div>
+                                <div class="text-sm">Pronto per ricevere segnali AI</div>
+                            </div>
+                        `;
+                    } else {
+                        statusDiv.innerHTML = `
+                            <div class="text-red-600">
+                                <div class="text-lg font-bold">❌ MT5 Disconnesso</div>
+                                <div class="text-sm">Verifica la connessione con il server MT5</div>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('MT5 status check failed:', error);
+                    document.getElementById('mt5-status').innerHTML = `
+                        <div class="text-yellow-600">
+                            <div class="text-lg font-bold">⚠️ Controllo connessione in corso...</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Check status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkMT5Status();
+
+            // Re-check every 10 seconds
+            setInterval(checkMT5Status, 10000);
+        });
+    </script>
+</body>
+</html>

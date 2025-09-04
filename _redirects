@@ -21,9 +21,9 @@
 /register /pages/register.html 200
 /settings /pages/settings.html 200
 
-# Additional pages - serve index.html for SPA routing
-/mt5-setup /index.html 200
-/subscribe /index.html 200
+# Specific pages - serve dedicated HTML files
+/mt5-setup /pages/mt5-setup.html 200
+/subscribe /pages/subscribe.html 200
 /missing /index.html 200
 
 # Fallback - serve index.html for all other routes (SPA catch-all)
