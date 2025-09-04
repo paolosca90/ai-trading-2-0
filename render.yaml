@@ -1,10 +1,15 @@
+version: 2
+
 services:
   - type: web
-    name: ai-trading-2.0
+    name: ai-trading-2-0
     runtime: node
-    startCommand: "node server.js"
-    buildCommand: "npm install"
+    region: frankfurt
+    build:
+      command: npm install
+      root: .
+    startCommand: node server.js
     port: 3000
     envVars:
-      - key: NODE_ENV
-        value: production
+      NODE_ENV: production
+      PORT: 3000
