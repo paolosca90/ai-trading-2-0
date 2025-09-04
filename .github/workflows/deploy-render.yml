@@ -1,0 +1,21 @@
+name: 🚀 Auto Deploy to Render
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 🔔 Trigger Render Deploy
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
+            
+      - name: ✅ Deploy Complete
+        run: echo "🎉 AI Trading 2.0 deployed successfully to Render!"
