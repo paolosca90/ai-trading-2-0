@@ -1,9 +1,10 @@
 services:
   - type: web
     name: ai-trading-2-0
-    env: static
-    staticPublishPath: ./
-    buildCommand: echo "Building AI Trading 2.0 static site..."
+    env: node
+    plan: free
+    buildCommand: yarn install
+    startCommand: yarn start
     headers:
       - path: /*
         name: X-Frame-Options
