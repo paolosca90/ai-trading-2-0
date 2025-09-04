@@ -1,44 +1,35 @@
 {
   "name": "ai-trading-2.0",
   "version": "2.0.0",
-  "description": "🚀 AI Trading 2.0 - Complete HTML+JavaScript Trading System",
+  "description": "🚀 AI Trading 2.0 - Complete HTML+JavaScript Trading System with Node.js Backend",
   "main": "server.js",
   "scripts": {
     "dev": "node server.js",
     "build": "mkdir -p build && cp -r * build/ 2>/dev/null || true && echo 'Static files copied to build/'",
     "start": "node server.js",
-    "deploy": "vercel --prod",
-    "deploy:render": "echo 'Deploy to Render.com using render.yaml configuration'"
+    "deploy": "echo 'Deploy to Render with Node.js backend'"
   },
   "keywords": [
     "trading",
     "ai",
-    "cryptocurrency",
-    "forex",
-    "mt5",
-    "automated-trading",
-    "machine-learning",
-    "technical-analysis"
+    "javascript",
+    "nodejs",
+    "express",
+    "html"
   ],
   "author": "AI Trading 2.0 Team",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "ws": "^8.14.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/ai-trading-2.0"
+    "url": "https://github.com/paolosca90/ai-trading-2-0"
   },
-  "homepage": "https://ai-trading-2.vercel.app",
-  "bugs": {
-    "url": "https://github.com/your-org/ai-trading-2.0/issues"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "homepage": "https://ai-trading-2-0.onrender.com"
 }

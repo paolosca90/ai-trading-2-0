@@ -5,8 +5,8 @@ window.CONFIG = {
     // Production Environment
     ENV: 'production',
     
-    // Backend API - Existing Production Backend
-    API_BASE_URL: 'https://backend-kzbh2zv05-paolos-projects-dc6990da.vercel.app',
+    // Backend API - Self-hosted Node.js server
+    API_BASE_URL: window.location.origin,
     
     // Supabase Database Configuration (Production)
     SUPABASE: {

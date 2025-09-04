@@ -1,4 +1,7 @@
 services:
-  - type: static
+  - type: web
     name: ai-trading-2-0
-    staticPublishPath: ./
+    env: node
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
