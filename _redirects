@@ -13,13 +13,18 @@
 # MT5 API calls - proxy to MT5 server
 /mt5/* http://154.61.187.189:8080/:splat 200
 
-# Main application pages - serve index.html for SPA routing
+# Main application pages - serve specific HTML pages
 /dashboard /pages/dashboard.html 200
-/trade /pages/trade.html 200  
+/trade /pages/trade.html 200
 /mldashboard /pages/mldashboard.html 200
 /login /pages/login.html 200
 /register /pages/register.html 200
 /settings /pages/settings.html 200
+
+# Additional pages - serve index.html for SPA routing
+/mt5-setup /index.html 200
+/subscribe /index.html 200
+/missing /index.html 200
 
 # Fallback - serve index.html for all other routes (SPA catch-all)
 /* /index.html 200
